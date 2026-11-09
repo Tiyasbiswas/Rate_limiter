@@ -1,0 +1,34 @@
+Version:1
+============
+Rate Limiter with Spring Boot + Bucket4j.
+Architecture :
+
+1.Client :->Sends GET /api/products
+2.Spring Security Filter Chain :->Controls the request flow
+3.RateLimitingFilter.java :->Identifies the client and checks the limit
+4.RateLimitConfiguration.java + Bucket4j :->Creates and manages the client's bucket
+  if (Allowed){
+  Controller executes
+  200 OK
+ }else{
+Rejected
+Controller not executed
+}
+
+We use Bucket4j is a Java library that implements rate-limiting algorithms.
+We chose the Token Bucket algorithm.
+
+Working Steps:
+-> HTTP Client
+-> Spring Security Filter Chain
+-> RateLimitFilter
+-> Identifies client by IP
+-> Bucket4j ->Checks and consumes tokens
+-> RateLimiterController
+
+Limitation of Version 1 :If we deploy our application on two servers.
+And each server has its own ConcurrentHashMap.
+Server A doesn't know what happened on Server B.
+There is another limitation: our map can keep growing as new IP addresses appear.
+We need a way to expire inactive buckets.
+___________________________________________________________________________________
