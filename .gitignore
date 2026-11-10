@@ -3,6 +3,11 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+# Ignore docker-compose file
+docker-compose.yml
+
+# Ignore a specific file inside src (replace 'filename.ext' with your actual file name)
+src/documentation
 
 ### STS ###
 .apt_generated

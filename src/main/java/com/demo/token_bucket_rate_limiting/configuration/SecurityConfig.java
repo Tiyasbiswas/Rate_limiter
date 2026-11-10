@@ -1,7 +1,7 @@
 package com.demo.token_bucket_rate_limiting.configuration;
 
 import com.demo.token_bucket_rate_limiting.filter.RateLimitingFilter;
-import org.apache.catalina.filters.RateLimitFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final RateLimitingFilter  rateLimitingFilter ;
+
     public SecurityConfig(RateLimitingFilter rateLimitingFilter) {
         this.rateLimitingFilter = rateLimitingFilter;
     }
@@ -35,5 +36,15 @@ public class SecurityConfig {
                 .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    // Prevent duplicate servlet-container registration
+    @Bean
+    public FilterRegistrationBean<RateLimitingFilter>
+    rateLimitFilterRegistration(RateLimitingFilter filter) {
+        FilterRegistrationBean<RateLimitingFilter> registration =
+                new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 }
